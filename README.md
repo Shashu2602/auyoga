@@ -7,8 +7,8 @@ Static HTML, CSS and JS. No build step, no dependencies, no framework.
 
 ```
 index.html    the whole page
-styles.css    ~31 components, all reading four per-band tokens
-app.js        seat meter, counters, scroll reveal, FAQ accordion
+styles.css    four colours, three colour worlds
+app.js        scroll progress, reveals, sticky sequence, counters, seat meter, FAQ
 serve.js      local dev server (GitHub Pages ignores this)
 ```
 
@@ -19,55 +19,84 @@ node serve.js
 # http://localhost:3000
 ```
 
-Any static server works — `serve.js` just avoids needing one installed.
-
 ## Deploy to GitHub Pages
 
-Settings → Pages → Source: **Deploy from a branch** → Branch: `main`, folder `/ (root)`.
-The site publishes at `https://shashu2602.github.io/mumweb/`. The repo must be public
-unless the account has GitHub Pro.
+Settings → Pages → Source: **Deploy from a branch** → Branch `main`, folder `/ (root)`.
+Publishes at `https://shashu2602.github.io/mumweb/`, and republishes on every push.
 
-Every push to `main` republishes automatically.
+> **The repo must be public** for Pages to work on a free account.
+> Settings → General → Danger Zone → Change visibility.
 
-## Before this goes live
-
-The page ships with deliberate placeholders. Search the source for `REPLACE` and
-`PLACEHOLDER`.
-
-- [ ] **Teacher name and bio** — `index.html`, the `.teacher` section
-- [ ] **Teacher photograph** — swap `.portrait-ph` for `<img>`. In her own home, chair in
-      frame, ordinary clothes. Not a white studio.
-- [ ] **Testimonials** — three placeholders in the `.quotes` section. Replace with real,
-      attributed quotes after the first workshop. Do not invent them; this audience talks
-      to each other and one exposed exaggeration ends the brand.
-- [ ] **Payment link** — the `<form action="#">` in `#signup` should point at the Razorpay
-      or Instamojo page
-- [ ] **Seat count** — `data-taken` on `.seatmeter`. Update as seats sell. Never inflate it.
-- [ ] **WhatsApp number, Instagram handle, health form, refund policy** — footer links
-- [ ] **Workshop dates** — the day cards say Tue/Wed/Thu; set the actual dates
-
-## Design notes
-
-Eight colours, one deep ramp plus two neutrals:
+## Palette — four colours, and only these four
 
 | | | Role |
 |---|---|---|
-| `#66211F` | Oxblood | Hero and CTA grounds, warnings, featured plan |
-| `#822B3B` | Claret | The marquee band |
-| `#873B57` | Wine | Ramp separator |
-| `#A04A57` | Rose | Card rules, small accents |
-| `#622D57` | Plum | Pull-quote ground, secondary buttons |
-| `#F0D3A0` | Wheat | The one light — display type on dark, primary button |
-| `#2D2D2D` | Charcoal | Body type, footer ground |
-| `#F1F3F2` | Porcelain | Light band ground, type on dark |
+| `#66211F` | **Maroon** | Dark grounds, and all type on light grounds |
+| `#A04A57` | **Rose** | Accent — rules, eyebrows, chips, the ticker band |
+| `#F0D3A0` | **Wheat** | The one light — display emphasis and the primary button on dark |
+| `#F1F3F2` | **Paper** | Light ground, and all type on dark grounds |
 
-The page commits to a single visual world instead of a light/dark pair — the alternating
-band rhythm *is* the design, and inverting it would flatten the pulse. Each `.band` sets
-`--bg`, `--ink`, `--muted`, `--accent` and `--line`; every component inside reads those
-four tokens, so a section changes colour world by changing one class.
+No fifth colour exists in the stylesheet — no grey, no black, no white. Every softer tone
+is one of these four at reduced alpha, so nothing drifts out of the family. If you add a
+colour, you have broken the system.
 
-Type is system-stack only (Palatino/Iowan display, Segoe UI/Optima body, Cascadia/Consolas
-data) so there is no font CDN to fail and no layout shift.
+Three colour worlds, not eight. Each `.section` sets `--ink`, `--dim`, `--line` and
+`--accent`; every component inside reads only those, so a section changes its entire
+appearance by swapping one class:
 
-Content rules carried over from the launch plan: no medical claims ("manage symptoms",
-never "treat" or "cure"), no weight figures anywhere, no before/after photographs.
+```css
+.section--paper   /* paper ground,  maroon type, rose accent  */
+.section--maroon  /* maroon ground, paper type,  wheat accent */
+.section--wheat   /* wheat ground,  maroon type, maroon accent */
+```
+
+## Type
+
+Two families, both variable, both deliberately uncommon:
+
+- **Fraunces** — old-style serif with an optical-size axis. Weight 900 for the hero and
+  figures, 700 for section titles, italic for emphasis.
+- **Familjen Grotesk** — a Swedish grotesque with slightly odd terminals. Body, subtitles,
+  and all letter-spaced uppercase labels.
+
+Loaded from Google Fonts with `display=swap` and a system fallback stack behind each.
+
+## Scroll behaviour
+
+All of it is progressive enhancement — the page reads completely with JavaScript blocked,
+and every effect is disabled under `prefers-reduced-motion`.
+
+| | |
+|---|---|
+| Hero | Words rise in sequence on load; the block drifts up and fades as you scroll past |
+| Nav | Hidden until you clear the hero, then slides down |
+| Progress | Hairline bar across the top tracks document position |
+| Signs | Left column sticks while six items scroll past, each lighting as it crosses centre |
+| Sections | Fade and rise on entry; grouped cards stagger 90ms apart |
+| Figures | Count up once, when scrolled to |
+| Seats | Thirty squares fill one at a time, 45ms apart |
+
+## Before this goes live
+
+Search the source for `REPLACE`.
+
+- [ ] **Teacher name and bio** — the `.teacher` section
+- [ ] **Teacher photograph** — swap `.ph` for an `<img>`. Her own home, chair in frame,
+      ordinary clothes. Not a white studio.
+- [ ] **Payment link** — `<form action="#">` in `#join` should point at the Razorpay or
+      Instamojo page
+- [ ] **Seat count** — `data-taken` on `.seats`. Update as seats sell. Never inflate it.
+- [ ] **WhatsApp number, Instagram handle, health form, refund policy** — footer links
+- [ ] **Workshop dates** — the day cards say Tue/Wed/Thu; set the real dates
+- [ ] **Testimonials** — there is no testimonial section yet, on purpose. Add one after the
+      first workshop with real attributed quotes. Don't ship invented ones; this audience
+      talks to each other and one exposed exaggeration ends the brand.
+
+## Content rules
+
+Carried over from the launch plan, and they are not stylistic preferences:
+
+- **No medical claims.** "Manage symptoms", "build strength", "support sleep". Never
+  "treat", "cure", "reverse", or "balance hormones".
+- **No weight, anywhere.** No figures, no before/after photographs. The program measures
+  five other things instead — that refusal is the entire differentiator.
