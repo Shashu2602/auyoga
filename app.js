@@ -13,19 +13,42 @@
     els.forEach(function (el) { io.observe(el); });
   }
 
-  /* nav appears once the hero is behind you */
+  /* one rAF-throttled scroll pass drives nav, progress bar and hero drift */
   var nav = document.querySelector('[data-nav]');
-  if (nav) {
-    var tick = false;
-    addEventListener('scroll', function () {
-      if (tick) { return; }
-      tick = true;
-      requestAnimationFrame(function () {
-        nav.classList.toggle('on', scrollY > innerHeight * 0.8);
-        tick = false;
-      });
-    }, { passive: true });
+  var bar = document.querySelector('[data-prog] i');
+  var art = document.querySelector('.hero__art');
+  var hero = document.querySelector('.hero');
+  var lines = document.querySelector('.hero h1');
+  var tick = false;
+
+  function frame() {
+    var y = scrollY;
+    var vh = innerHeight;
+
+    if (nav) { nav.classList.toggle('on', y > vh * 0.8); }
+
+    if (bar) {
+      var span = document.documentElement.scrollHeight - vh;
+      bar.style.transform = 'scaleX(' + (span > 0 ? Math.min(y / span, 1) : 0) + ')';
+    }
+
+    if (!still && hero && y < vh * 1.2) {
+      var p = y / vh;
+      if (art) { art.style.transform = 'translateY(' + (y * 0.22) + 'px)'; }
+      if (lines) {
+        lines.style.transform = 'translateY(' + (y * -0.06) + 'px)';
+        lines.style.opacity = Math.max(1 - p * 1.25, 0);
+      }
+    }
+    tick = false;
   }
+
+  addEventListener('scroll', function () {
+    if (tick) { return; }
+    tick = true;
+    requestAnimationFrame(frame);
+  }, { passive: true });
+  frame();
 
   /* staggered reveals */
   $('[data-stagger] .reveal').forEach(function (el, i) {
@@ -34,8 +57,8 @@
   watch($('.reveal'), { rootMargin: '0px 0px -10% 0px', threshold: .1 },
     function (el, hit, io) { if (hit) { el.classList.add('on'); io && io.unobserve(el); } });
 
-  /* sticky sequence: light each item as it crosses */
-  watch($('.seq li'), { rootMargin: '-22% 0px -32% 0px' },
+  /* sticky sequence: light each item as it crosses the middle */
+  watch($('.seq li'), { rootMargin: '-20% 0px -30% 0px' },
     function (el, hit) { el.classList.toggle('on', hit); });
 
   /* counters */
@@ -53,26 +76,27 @@
     })(performance.now());
   });
 
-  /* seat meter */
-  var seats = document.querySelector('.seats');
-  if (seats) {
-    var total = +seats.dataset.total || 30;
-    var taken = Math.min(+seats.dataset.taken || 0, total);
-    var label = seats.querySelector('strong b');
-    var box = seats.lastElementChild;
-    if (label) { label.textContent = taken; }
+  /* batch-size meter: fifteen mats, filling one at a time */
+  var mats = document.querySelector('[data-mats]');
+  if (mats) {
+    var total = +mats.dataset.mats || 15;
+    var box = $('div', mats)[1];
+    var label = mats.querySelector('strong b');
+    if (label) { label.textContent = total; }
 
-    for (var i = 0; i < total; i++) { box.appendChild(document.createElement('i')); }
-    box.setAttribute('role', 'img');
-    box.setAttribute('aria-label', taken + ' of ' + total + ' seats taken');
+    if (box) {
+      for (var i = 0; i < total; i++) { box.appendChild(document.createElement('i')); }
+      box.setAttribute('role', 'img');
+      box.setAttribute('aria-label', total + ' mats in a batch');
 
-    watch([seats], { threshold: .4 }, function (el, hit, io) {
-      if (!hit) { return; }
-      io && io.disconnect();
-      $('i', box).slice(0, taken).forEach(function (d, n) {
-        setTimeout(function () { d.classList.add('on'); }, still ? 0 : n * 45);
+      watch([mats], { threshold: .4 }, function (el, hit, io) {
+        if (!hit) { return; }
+        io && io.disconnect();
+        $('i', box).forEach(function (d, n) {
+          setTimeout(function () { d.classList.add('on'); }, still ? 0 : n * 60);
+        });
       });
-    });
+    }
   }
 
   /* one FAQ answer open at a time */
