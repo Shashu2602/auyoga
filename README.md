@@ -2,7 +2,7 @@
 
 Marketing site for **Sthira**, live morning yoga classes taught by **Anuranjini Upadhyay**
 (ten years of teaching). Open to everyone, beginners included. Two batches — 8:00–9:00 am
-and 11:00–12:00 am (best for moms) — at **₹1,500 a month**, first class free.
+and 11:00–12:00 noon (best for moms) — at **₹1,500 a month**, first class free.
 
 There is **no payment or billing on this site**. Every call to action points at the phone
 number, WhatsApp, or email.
