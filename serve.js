@@ -40,5 +40,5 @@ http.createServer((req, res) => {
     res.end(body);
   });
 }).listen(PORT, () => {
-  console.log(`Sthira site running at http://localhost:${PORT}`);
+  console.log(`auyoga site running at http://localhost:${PORT}`);
 });

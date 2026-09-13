@@ -1,4 +1,4 @@
-/* Sthira — enhancement only. The page reads fully with this file blocked. */
+/* auyoga — enhancement only. The page reads fully with this file blocked. */
 (function () {
   'use strict';
 

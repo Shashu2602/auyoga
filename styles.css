@@ -1,4 +1,4 @@
-/* Sthira — four colours: maroon #66211F · rose #A04A57 · wheat #F0D3A0 · paper #F1F3F2
+/* auyoga — four colours: maroon #66211F · rose #A04A57 · wheat #F0D3A0 · paper #F1F3F2
    Two fonts: Fraunces (display) · Familjen Grotesk (everything else)
    Each .section sets --ink/--dim/--line/--accent; components read only those. */
 
@@ -311,16 +311,10 @@ a{color:inherit;text-decoration:none;}
 .mats__note{font-size:.92rem;color:var(--dim);max-width:52ch;}
 
 /* teacher ------------------------------------------------------------ */
-.who{display:grid;gap:var(--gap);align-items:center;}
-@media (min-width:900px){ .who{grid-template-columns:5fr 7fr;gap:clamp(3rem,6vw,6rem);} }
-.who>div:last-child{display:flex;flex-direction:column;gap:1.3rem;}
-.ph,.who__img{aspect-ratio:4/5;width:100%;
-  border-radius:50% 50% 1.2rem 1.2rem / 30% 30% 1.2rem 1.2rem;}
-.who__img{object-fit:cover;display:block;}
-.ph{display:grid;place-content:center;gap:1.2rem;justify-items:center;padding:2.5rem;
-  text-align:center;background:rgba(102,33,31,.05);
-  border:1.5px dashed rgba(102,33,31,.35);}
-.ph p{font-size:.85rem;line-height:1.6;max-width:22ch;opacity:.72;}
+.who{display:flex;flex-direction:column;gap:1.4rem;}
+.who__img{aspect-ratio:4/5;width:100%;max-width:380px;
+  border-radius:50% 50% 1.2rem 1.2rem / 30% 30% 1.2rem 1.2rem;
+  object-fit:cover;display:block;}
 .who__years{display:flex;align-items:baseline;gap:.9rem;}
 .who__years b{font-family:var(--serif);font-weight:900;letter-spacing:-.05em;
   font-size:clamp(2.6rem,5vw,4rem);line-height:1;color:var(--accent);}
