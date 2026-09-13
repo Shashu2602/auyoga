@@ -19,6 +19,7 @@
   var art = document.querySelector('.hero__art');
   var hero = document.querySelector('.hero');
   var lines = document.querySelector('.hero h1');
+  var floatMsg = document.querySelector('[data-float-msg]');
   var tick = false;
 
   function frame() {
@@ -26,6 +27,7 @@
     var vh = innerHeight;
 
     if (nav) { nav.classList.toggle('on', y > vh * 0.8); }
+    if (floatMsg) { floatMsg.classList.toggle('on', y > vh * 0.4); }
 
     if (bar) {
       var span = document.documentElement.scrollHeight - vh;
@@ -66,12 +68,13 @@
     if (!hit) { return; }
     io && io.unobserve(el);
     var to = +el.dataset.to || 0;
-    if (still || !to) { el.textContent = to; return; }
+    var suffix = el.dataset.suffix || '';
+    if (still || !to) { el.textContent = to + suffix; return; }
     var t0;
     (function step(now) {
       t0 = t0 || now;
       var p = Math.min((now - t0) / 1100, 1);
-      el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+      el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))) + suffix;
       if (p < 1) { requestAnimationFrame(step); }
     })(performance.now());
   });
