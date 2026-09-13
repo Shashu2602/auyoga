@@ -1,6 +1,6 @@
 # auyoga — website
 
-Marketing site for **auyoga**, live morning yoga classes taught by **Anuranjini Upadhyay**
+Marketing site for **auyoga**, live morning yoga classes taught by **Anu**
 (5+ years of experience). Open to everyone, beginners included. Two batches — 8:00–9:00 am
 and 11:00–12:00 noon (best for moms) — at **₹1,500 a month**, first class free.
 
@@ -92,7 +92,7 @@ and every effect is disabled under `prefers-reduced-motion`.
 
 Search the source for `REPLACE`.
 
-- [ ] **Anuranjini's photograph** — add `<img class="who__img" src="anuranjini.jpg" alt="Anuranjini Upadhyay teaching">` in `#teacher` if a photo becomes available.
+- [ ] **Anu's photograph** — add `<img class="who__img" src="anu.jpg" alt="Anu teaching">` in `#teacher` if a photo becomes available.
       Portrait, 4:5, her own space, ordinary clothes. Not a white studio.
 - [ ] **Testimonials** — there is no testimonial section yet, on purpose. Add one after the
       first month with real, attributed quotes. Don't ship invented ones.
