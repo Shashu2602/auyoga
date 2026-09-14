@@ -2,7 +2,7 @@
 
 Marketing site for **auyoga**, live morning yoga classes taught by **Anu**
 (5+ years of experience). Open to everyone, beginners included. Two batches — 8:00–9:00 am
-and 11:00–12:00 noon (best for moms) — at **₹1,500 a month**, first class free.
+and 11:00–12:00 noon IST (best for moms) — at **₹1,500 a month**, first class free.
 
 There is **no payment or billing on this site**. Every call to action points at the phone
 number, WhatsApp, or email.
@@ -12,7 +12,8 @@ Static HTML, CSS and JS. No build step, no dependencies, no framework.
 ```
 index.html    the whole page
 styles.css    four colours, three colour worlds
-app.js        progress bar, reveals, hero drift, sticky list, counters, mats meter, FAQ
+app.js        progress bar, reveals, hero drift, sticky list, counters, mats meter, FAQ,
+              batch times in the visitor's time zone
 serve.js      local dev server (GitHub Pages ignores this)
 ```
 
@@ -87,6 +88,19 @@ and every effect is disabled under `prefers-reduced-motion`.
 | Figures | Count up once, when scrolled to |
 | Mats | Fifteen squares pop in, 60ms apart |
 | FAQ | One answer open at a time, the answer slides in, the chevron rotates |
+
+## Timings in the visitor's time zone
+
+The batch times are written once, in IST, as `<time datetime="08:00">8:00</time>` in the
+batches section. `app.js` reads those `datetime` values, detects the visitor's time zone,
+and adds a line under each batch showing the same class on their own clock, including the
+day shift (the Monday 8 am class is Sunday evening in the US). A "See the times in" picker
+lets them choose another city, and the choice is remembered in `localStorage`. Visitors on
+India time see no extra line.
+
+To change a batch time, edit the `datetime` attribute and the visible text together. The
+footer, the fees list and the meta description repeat the times as plain text, so update
+those too.
 
 ## Before this goes live
 

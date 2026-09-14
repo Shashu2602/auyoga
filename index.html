@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>auyoga — classes with Anu</title>
-<meta name="description" content="Live morning yoga classes with Anu — 5+ years of experience. Two batches: 8–9 AM and 11–12 (best for moms). ₹1,500 a month. Beginners welcome. First class free.">
+<meta name="description" content="Live morning yoga classes with Anu — 5+ years of experience. Two batches: 8–9 AM and 11–12 IST (best for moms). ₹1,500 a month. Beginners welcome. First class free.">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#66211F">
 <meta property="og:title" content="auyoga — classes with Anu">
@@ -179,8 +179,16 @@
     <div class="head reveal">
       <p class="eyebrow">Two batches</p>
       <h2 class="title">Pick the hour that suits your morning</h2>
-      <p class="sub">Same teacher, same class, two different times. You can move between
-        them whenever your week changes — just tell her.</p>
+      <p class="sub">Same teacher, same class, two different times, both in India time (IST).
+        You can move between them whenever your week changes — just tell her.</p>
+      <div class="tz" data-tz hidden>
+        <label for="tz-pick">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+          See the times in
+        </label>
+        <select id="tz-pick"></select>
+        <output for="tz-pick" hidden>Same as India time</output>
+      </div>
     </div>
 
     <div class="slots">
@@ -191,7 +199,8 @@
           <circle cx="60" cy="60" r="22"/>
         </svg>
         <p class="eyebrow">Batch 01 · early</p>
-        <h3><time>8:00</time><s>–</s><time>9:00</time><em>am</em></h3>
+        <h3><time datetime="08:00">8:00</time><s>–</s><time datetime="09:00">9:00</time><em>am IST</em></h3>
+        <p class="slot__local" data-local hidden><span></span><b></b><small></small></p>
         <p class="slot__for">Done before the day starts.</p>
         <ul class="list">
           <li>Good for office and school mornings</li>
@@ -207,7 +216,8 @@
           <circle cx="60" cy="60" r="26"/>
         </svg>
         <p class="eyebrow">Batch 02 · late morning</p>
-        <h3><time>11:00</time><s>–</s><time>12:00</time><em>noon</em></h3>
+        <h3><time datetime="11:00">11:00</time><s>–</s><time datetime="12:00">12:00</time><em>noon IST</em></h3>
+        <p class="slot__local" data-local hidden><span></span><b></b><small></small></p>
         <p class="slot__for">After the school run and the kitchen.</p>
         <ul class="list">
           <li>The house is quiet and nobody needs you</li>
@@ -266,7 +276,7 @@
       <em>per month · either batch · stop whenever you like</em>
       <ul class="list">
         <li>A live class every morning, Monday to Saturday</li>
-        <li>Both timings open to you — 8–9 or 11–12</li>
+        <li>Both timings open to you — 8–9 or 11–12 IST</li>
         <li>A recording of every class, in case you miss one</li>
         <li>Your five numbers checked once a month</li>
         <li>Your first class is free, so you can see if it fits</li>
@@ -381,8 +391,8 @@
     <p><b>auyoga</b>Breathe. Move. Rest. Six mornings a week.</p>
     <nav>
       <div><strong>Classes</strong>
-        <a href="#batches">8:00 – 9:00 am</a>
-        <a href="#batches">11:00 – 12:00 noon</a>
+        <a href="#batches">8:00 – 9:00 am IST</a>
+        <a href="#batches">11:00 – 12:00 noon IST</a>
         <a href="#price">₹1,500 a month</a></div>
       <div><strong>About</strong>
         <a href="#teacher">Anu</a>

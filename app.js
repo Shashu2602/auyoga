@@ -109,4 +109,110 @@
       if (d.open) { faqs.forEach(function (o) { if (o !== d) { o.open = false; } }); }
     });
   });
+
+  /* batch timings in the visitor's own time zone. Classes run on IST, which is
+     UTC+5:30 all year (India has no daylight saving), so one fixed offset converts them. */
+  var tz = document.querySelector('[data-tz]');
+  if (tz && window.Intl && Intl.DateTimeFormat.prototype.formatToParts) { localTimes(tz); }
+
+  function localTimes(tz) {
+    var IST = 330 * 6e4;
+    var KEY = 'auyoga-tz';
+    var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    var RENAMED = { Calcutta: 'Kolkata', Katmandu: 'Kathmandu', Saigon: 'Ho Chi Minh', Kiev: 'Kyiv',
+                    Rangoon: 'Yangon', 'Sao Paulo': 'São Paulo', 'St Johns': 'St John\'s' };
+    var REGION = { America: 'Americas', Indian: 'Indian Ocean' };
+    var pick = tz.querySelector('select');
+    var same = tz.querySelector('output');
+    var slots = $('.slot').map(function (el) {
+      return { at: $('time', el).map(function (t) { return t.getAttribute('datetime'); }),
+               out: el.querySelector('[data-local]') };
+    }).filter(function (s) { return s.at.length === 2 && s.out; });
+    if (!pick || !slots.length) { return; }
+
+    function ok(z) {
+      try { return !!z && !!new Intl.DateTimeFormat('en-US', { timeZone: z }); } catch (e) { return false; }
+    }
+    function names(z) {   /* 'America/Argentina/Buenos_Aires' → ['Argentina', 'Buenos Aires'] */
+      var p = z.split('/');
+      return (p.length > 1 ? p.slice(1) : p).map(function (s) {
+        s = s.replace(/_/g, ' ');
+        return RENAMED[s] || s;
+      });
+    }
+
+    /* "HH:MM" on today's date in India → what the wall clock reads in the picked zone */
+    function there(hm, fmt) {
+      var now = new Date(Date.now() + IST);
+      var day = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+      var p = hm.split(':');
+      var o = {};
+      fmt.formatToParts(new Date(day + (p[0] * 60 + +p[1]) * 6e4 - IST))
+        .forEach(function (x) { o[x.type] = +x.value; });
+      return { h: o.hour % 24, m: o.minute,
+               shift: Math.round((Date.UTC(o.year, o.month - 1, o.day) - day) / 864e5) };
+    }
+    function clock(t) { return (t.h % 12 || 12) + ':' + (t.m < 10 ? '0' : '') + t.m; }
+    function half(t) {
+      if (!t.m && t.h === 12) { return 'noon'; }
+      if (!t.m && !t.h) { return 'midnight'; }
+      return t.h < 12 ? 'am' : 'pm';
+    }
+    function range(a, b) {   /* '10:30 – 11:30 pm', '11:30 pm – 12:30 am', '11:00 – 12:00 noon' */
+      var x = half(a), y = half(b);
+      var one = x === y || (x === 'am' && y === 'noon') || (x === 'pm' && y === 'midnight');
+      return clock(a) + (one ? '' : ' ' + x) + ' – ' + clock(b) + ' ' + y;
+    }
+    function week(shift) {   /* classes are Monday to Saturday in India */
+      var d = function (n) { return DAYS[(n + shift + 7) % 7]; };
+      return d(1) + ' to ' + d(6) + (shift ? ' (Monday to Saturday in India)' : '');
+    }
+
+    function show(zone) {
+      var fmt = new Intl.DateTimeFormat('en-US', { timeZone: zone, hour12: false,
+        year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' });
+      var city = names(zone).pop();
+      var all = true;
+      slots.forEach(function (s) {
+        var a = there(s.at[0], fmt), b = there(s.at[1], fmt);
+        var p = s.at[0].split(':');
+        var equal = !a.shift && a.h === +p[0] && a.m === +p[1];
+        all = all && equal;
+        s.out.hidden = equal;
+        if (equal) { return; }
+        var f = s.out.children;
+        f[0].textContent = city + ' time';
+        f[1].textContent = range(a, b);
+        f[2].textContent = week(a.shift);
+      });
+      if (same) { same.hidden = !all; }
+    }
+
+    var list = Intl.supportedValuesOf ? Intl.supportedValuesOf('timeZone') : [];
+    var saved;
+    try { saved = localStorage.getItem(KEY); } catch (e) {}
+    var start = [saved, Intl.DateTimeFormat().resolvedOptions().timeZone, 'Asia/Kolkata'].filter(ok)[0];
+    /* spell it the way this browser's own list does ('Asia/Kolkata' vs 'Asia/Calcutta') */
+    start = new Intl.DateTimeFormat('en-US', { timeZone: start }).resolvedOptions().timeZone;
+    if (list.indexOf(start) < 0) { list = list.concat(start); }
+
+    var groups = {};
+    list.forEach(function (z) {
+      var region = z.indexOf('/') < 0 ? 'Other' : z.split('/')[0];
+      if (!groups[region]) {
+        groups[region] = document.createElement('optgroup');
+        groups[region].label = REGION[region] || region;
+        pick.appendChild(groups[region]);
+      }
+      groups[region].appendChild(new Option(names(z).join(' / '), z));
+    });
+
+    pick.value = start;
+    pick.addEventListener('change', function () {
+      show(pick.value);
+      try { localStorage.setItem(KEY, pick.value); } catch (e) {}
+    });
+    show(start);
+    tz.hidden = false;
+  }
 })();
